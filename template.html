@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Style for the results div */
+        #results {
+            margin-top: 20px;
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
+    <script>
+        function uploadFile() {
+            // Get the file input element
+            var fileInput = document.getElementById('file-input');
+
+            // Get the selected file
+            var file = fileInput.files[0];
+
+            // Create a FormData object
+            var formData = new FormData();
+
+            // Append the file to the FormData object
+            formData.append('file', file);
+
+            // Send a POST request to the /upload_file route with the FormData object
+            fetch('/upload_file', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the response from the server in the results div
+                document.getElementById('results').innerText = data.status;
+            });
+        }
+
+        function getNews() {
+            // Send a GET request to the /get_news route
+            fetch('/get_news')
+            .then(response => response.json())
+            .then(data => {
+                // Get the select element
+                var select = document.getElementById('article-select');
+
+                // Clear the select element
+                select.innerHTML = '';
+
+                // Add an option for each news article
+                data.news.forEach(function(news, index) {
+                    var option = document.createElement('option');
+                    option.value = index;
+                    option.text = news;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function sendText() {
+            // Get the selected article index
+            var selected_article_index = document.getElementById('article-select').value;
+
+            // Send a POST request to the /process_text route with the selected article index
+            fetch('/process_text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'selected_article_index': selected_article_index }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the selected and recommended articles in the results div
+                document.getElementById('results').innerText = "Pasirinktas straipsnis: " + data.selected_article + "\\nRekomenduojamas straipsnis: " + data.recommended_article;
+            });
+        }
+    </script>
+</head>
+<body>
+    <!-- File input for uploading a file -->
+    <input type="file" id="file-input">
+
+    <!-- Button for uploading a file -->
+    <button onclick="uploadFile()">Įkelti failą</button>
+
+    <!-- Button for getting the news -->
+    <button onclick="getNews()">Gauti naujienas</button>
+
+    <!-- Select for choosing a news article -->
+    <select id="article-select"></select>
+
+    <!-- Button for sending the text -->
+    <button onclick="sendText()">Siųsti tekstą</button>
+
+    <!-- Div for displaying the results -->
+    <div id="results"></div>
+</body>
+</html>
