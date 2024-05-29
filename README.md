@@ -1,4 +1,5 @@
-#Naujienų Sistema
+Naujienų Sistema
+
 Ši naujienų rekomendacinė sistema naudoja Flask API ir sklearn biblioteką. Ji leidžia vartotojui įkelti failą su naujienomis, aktyvuoti teksto analizę, matyti sąrašą naujienų, esančių faile, pasirinkti dominančią naujieną ir gauti rekomendaciją dar vienai naujienai.
 
 Flask API
